@@ -105,7 +105,7 @@ export default function Register() {
                 <div className="mt-4 flex items-center justify-end">
                     <Link
                         href={route('login')}
-                        className="link"
+                        className="link me-2"
                     >
                         Already registered?
                     </Link>

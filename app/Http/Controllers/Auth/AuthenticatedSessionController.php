@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\RolesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
@@ -27,11 +28,21 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request): \Symfony\Component\HttpFoundation\Response
     {
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        /**  @var User $user */
+        $user = Auth::user();
+        $route = '/';
+
+        if($user->hasAnyRole([RolesEnum::Admin,RolesEnum::Vendor])){
+            return Inertia::location('/admin');
+        }else{
+            $route = route('dashboard',absolute:false);
+        }
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
